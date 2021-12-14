@@ -1,5 +1,0 @@
-.sheet {
-    display: grid;
-    grid-template-columns: repeat(4, 24%);
-    grid-gap: 1.35%;
-}

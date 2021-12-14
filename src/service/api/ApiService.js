@@ -24,7 +24,6 @@ export default class ApiService {
     }
 
     getResource(uri, page, per_page, query) {
-        console.log(uri);
         const client_id = this._clientID;
         const queryParam = query ? { query } : {};
         return this._axios.get(

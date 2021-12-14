@@ -1,10 +1,10 @@
 import './App.css';
-import ImageList from './components/molecules/image-list/ImageList';
+import SearchWrapper from './components/molecules/search-wrapper';
 
 function App() {
     return (
         <div className="App">
-            <ImageList />
+            <SearchWrapper />
         </div>
     );
 }
