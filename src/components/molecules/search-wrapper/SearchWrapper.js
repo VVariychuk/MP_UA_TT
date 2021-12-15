@@ -9,12 +9,13 @@ import Container from '../container';
 import Modal from '../modal/Modal';
 
 import styles from './styles.module.css';
+import MyLoader from '../../atoms/loader/Loader';
 
 const SearchWrapper = ({ API }) => {
     const [width, height] = useWindowSize();
     const [storageName] = useState('queries');
     const [page, setPage] = useState(1);
-    const [perPage, setPerPage] = useState(20);
+    const [perPage] = useState(20);
     const [query, setQuery] = useState('');
     const [inputValue, setInputValue] = useState('');
     const [isNewQuery, setIsNewQuery] = useState(true);
@@ -24,6 +25,7 @@ const SearchWrapper = ({ API }) => {
     const [currentPicture, setCurrentPicture] = useState('');
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [isNoContent, setIsNoContent] = useState(false);
+    const [showLoader, setShowLoader] = useState(false);
 
     useEffect(() => {
         setLastQueries(getLast_5_Queries(getQueriesList()));
@@ -32,6 +34,7 @@ const SearchWrapper = ({ API }) => {
     const getData = (page, perPage, query) => {
         const orientation = width >= 768 ? 'landscape' : 'portrait';
 
+        setShowLoader(true);
         API.getPhotosBySearchQuery(page, perPage, query, orientation)
             .then(res => res.data)
             .then(res => {
@@ -47,7 +50,13 @@ const SearchWrapper = ({ API }) => {
                 isMoreContent(page, res.total_pages);
                 setInputValue('');
             })
-            .catch(err => console.log(err));
+            .then(() =>
+                window.scrollTo({
+                    top: document.documentElement.scrollHeight,
+                    behavior: 'smooth',
+                }),
+            )
+            .finally(() => setShowLoader(false));
     };
 
     function getLast_5_Queries(arr) {
@@ -111,6 +120,7 @@ const SearchWrapper = ({ API }) => {
 
         setCurrentPicture(src);
         toggleModal();
+        setShowLoader(true);
     };
 
     return (
@@ -151,7 +161,8 @@ const SearchWrapper = ({ API }) => {
             </Container>
             {isOpenModal && (
                 <Modal onClose={toggleModal}>
-                    <img src={currentPicture} alt="Big variant" />
+                    {showLoader && <MyLoader />}
+                    <img src={currentPicture} alt="Big variant" onLoad={() => setShowLoader(false)} />
                 </Modal>
             )}
         </>
