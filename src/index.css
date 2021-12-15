@@ -65,3 +65,27 @@ a {
   display: flex;
   flex-direction: column;
 }
+
+#imageWrapper::before {
+  display: inline-block;
+  position: absolute;
+  content: "";
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 43px;
+  background-color: rgba(21, 32, 29, 0.514);
+  opacity: 0;
+  transform: translateY(100%);
+  transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+ul>li:hover #description,
+ul>li:hover #imageWrapper::before {
+  transform: translateY(0%);
+  opacity: 1;
+  transition: background-color 400ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 400ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}

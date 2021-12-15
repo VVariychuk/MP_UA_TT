@@ -7,15 +7,15 @@ import SearchForm from '../search-form';
 import Button from '../../atoms/button';
 import Container from '../container';
 import Modal from '../modal/Modal';
+import MyLoader from '../../atoms/loader';
 
 import styles from './styles.module.css';
-import MyLoader from '../../atoms/loader/Loader';
 
 const SearchWrapper = ({ API }) => {
     const [width, height] = useWindowSize();
     const [storageName] = useState('queries');
     const [page, setPage] = useState(1);
-    const [perPage] = useState(20);
+    const [perPage] = useState(16);
     const [query, setQuery] = useState('');
     const [inputValue, setInputValue] = useState('');
     const [isNewQuery, setIsNewQuery] = useState(true);
@@ -24,8 +24,9 @@ const SearchWrapper = ({ API }) => {
     const [noMoreContent, setNoMore] = useState(false);
     const [currentPicture, setCurrentPicture] = useState('');
     const [isOpenModal, setIsOpenModal] = useState(false);
-    const [isNoContent, setIsNoContent] = useState(false);
+    const [isNoContent, setIsNoContent] = useState(true);
     const [showLoader, setShowLoader] = useState(false);
+    const [emptyImagesListMessage, setEILM] = useState('We are glad to see you!');
 
     useEffect(() => {
         setLastQueries(getLast_5_Queries(getQueriesList()));
@@ -39,6 +40,7 @@ const SearchWrapper = ({ API }) => {
             .then(res => res.data)
             .then(res => {
                 if (res.results.length === 0) {
+                    setEILM('No content for this query');
                     return setIsNoContent(true);
                 }
                 if (!isNewQuery) {
@@ -96,8 +98,9 @@ const SearchWrapper = ({ API }) => {
 
     function isMoreContent(page, totalPages) {
         if (page === totalPages) {
-            setNoMore(true);
+            return setNoMore(true);
         }
+        return setNoMore(false);
     }
 
     const loadMoreHandler = e => {
@@ -150,7 +153,9 @@ const SearchWrapper = ({ API }) => {
                         )}
                     </>
                 ) : (
-                    <div />
+                    <div>
+                        <h1 className={styles.message}>{emptyImagesListMessage}</h1>
+                    </div>
                 )}
             </Container>
             {isOpenModal && (

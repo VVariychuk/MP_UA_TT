@@ -54,3 +54,6 @@ button:hover {
     margin-right: auto;
     margin-top: 20px;
 }
+.message {
+    color:rgba(9, 26, 82, 0.712)
+}
