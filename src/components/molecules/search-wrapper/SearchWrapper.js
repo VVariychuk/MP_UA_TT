@@ -150,13 +150,7 @@ const SearchWrapper = ({ API }) => {
                         )}
                     </>
                 ) : (
-                    <div
-                        style={{
-                            'background-image': "url('/public/images/noContent.png') center cover",
-                            width: 800,
-                            height: 700,
-                        }}
-                    />
+                    <div />
                 )}
             </Container>
             {isOpenModal && (
