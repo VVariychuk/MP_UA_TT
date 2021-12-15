@@ -1,4 +1,4 @@
-# Test project of Volodymyr Variichuk for MP_UA
+# Test project Images-Searcher
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -8,11 +8,11 @@ https://unsplash.com/documentation#search
 
 ### Before starting work
 
-Install all dependencies once per project: npm i
+Install all dependencies once per project: `npm i`
 
 ### Development
 
-Start development mode: `npm start` `
+Start development mode: `npm start`
 
 ## Files and folders:
 
