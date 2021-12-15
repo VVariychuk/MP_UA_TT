@@ -1,40 +1,58 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
+import { useWindowSize } from '@react-hook/window-size';
 import withApiService from '../../../hoc/withApiService';
 import Gallery from '../gallery';
 import SearchForm from '../search-form';
 import Button from '../../atoms/button';
 import Container from '../container';
+import Modal from '../modal/Modal';
 
 import styles from './styles.module.css';
 
 const SearchWrapper = ({ API }) => {
+    const [width, height] = useWindowSize();
     const [storageName] = useState('queries');
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(20);
     const [query, setQuery] = useState('');
+    const [inputValue, setInputValue] = useState('');
     const [isNewQuery, setIsNewQuery] = useState(true);
     const [remoteData, setRemoteData] = useState([]);
     const [lastQueries, setLastQueries] = useState([]);
     const [noMoreContent, setNoMore] = useState(false);
+    const [currentPicture, setCurrentPicture] = useState('');
+    const [isOpenModal, setIsOpenModal] = useState(false);
+    const [isNoContent, setIsNoContent] = useState(false);
 
     useEffect(() => {
-        setLastQueries(getQueriesList());
+        setLastQueries(getLast_5_Queries(getQueriesList()));
     }, [API]);
 
     const getData = (page, perPage, query) => {
-        API.getPhotosBySearchQuery(page, perPage, query)
+        const orientation = width >= 768 ? 'landscape' : 'portrait';
+
+        API.getPhotosBySearchQuery(page, perPage, query, orientation)
             .then(res => res.data)
             .then(res => {
+                if (res.results.length === 0) {
+                    return setIsNoContent(true);
+                }
                 if (!isNewQuery) {
                     setRemoteData(prev => [...prev, ...res.results]);
                 } else {
                     setRemoteData(res.results);
                 }
+                setIsNoContent(false);
                 isMoreContent(page, res.total_pages);
+                setInputValue('');
             })
             .catch(err => console.log(err));
     };
+
+    function getLast_5_Queries(arr) {
+        return arr.slice(-5).reverse();
+    }
 
     function getQueriesList() {
         return JSON.parse(localStorage.getItem(storageName)) || [];
@@ -44,7 +62,7 @@ const SearchWrapper = ({ API }) => {
         const list = getQueriesList();
         if (!list.includes(value) && value) {
             list.push(value);
-            setLastQueries(list);
+            setLastQueries(getLast_5_Queries(list));
         }
         localStorage.setItem(storageName, JSON.stringify(list));
     };
@@ -52,6 +70,7 @@ const SearchWrapper = ({ API }) => {
     const handleQueryChange = e => {
         const { value } = e.target;
         setQuery(value);
+        setInputValue(value);
         setPage(1);
         setIsNewQuery(true);
     };
@@ -75,14 +94,29 @@ const SearchWrapper = ({ API }) => {
     const loadMoreHandler = e => {
         e.preventDefault();
         setPage(page + 1);
-        console.log(page);
         getData(page, perPage, query);
+    };
+
+    const toggleModal = () => {
+        if (currentPicture) {
+            setCurrentPicture('');
+        }
+        setIsOpenModal(!isOpenModal);
+    };
+
+    const onImgClick = (e, src) => {
+        if (e.target.nodeName !== 'IMG') {
+            return;
+        }
+
+        setCurrentPicture(src);
+        toggleModal();
     };
 
     return (
         <>
             <SearchForm
-                value={query}
+                value={inputValue}
                 text="Click to search"
                 onChangeHandler={handleQueryChange}
                 onClickHandler={handleClickSearchButton}
@@ -90,18 +124,36 @@ const SearchWrapper = ({ API }) => {
                 buttonStyles={styles.button}
                 className={styles.wrapper}
                 queriesList={lastQueries}
+                disabledBtn={inputValue ? false : true}
             />
             <Container>
-                <Gallery remoteData={remoteData} />
-                {remoteData.length > 0 && (
-                    <Button
-                        text="Load more"
-                        onClickHandler={loadMoreHandler}
-                        disabled={noMoreContent}
-                        className={`${styles.button} ${styles['load-more-button']}`}
+                {!isNoContent ? (
+                    <>
+                        <Gallery remoteData={remoteData} imgClickHandler={onImgClick} size={{ width, height }} />
+                        {remoteData.length > 0 && (
+                            <Button
+                                text="Load more"
+                                onClickHandler={loadMoreHandler}
+                                disabled={noMoreContent}
+                                className={`${styles.button} ${styles['load-more-button']}`}
+                            />
+                        )}
+                    </>
+                ) : (
+                    <div
+                        style={{
+                            'background-image': "url('/public/images/noContent.png') center cover",
+                            width: 800,
+                            height: 700,
+                        }}
                     />
                 )}
             </Container>
+            {isOpenModal && (
+                <Modal onClose={toggleModal}>
+                    <img src={currentPicture} alt="Big variant" />
+                </Modal>
+            )}
         </>
     );
 };

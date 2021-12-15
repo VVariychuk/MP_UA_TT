@@ -12,6 +12,7 @@ const SearchForm = ({
     inputStyles = '',
     className,
     queriesList = [],
+    disabledBtn,
 }) => {
     return (
         <header>
@@ -23,7 +24,7 @@ const SearchForm = ({
                     className={inputStyles}
                     queriesList={queriesList}
                 />
-                <Button text={text} onClickHandler={onClickHandler} className={buttonStyles} />
+                <Button text={text} onClickHandler={onClickHandler} className={buttonStyles} disabled={disabledBtn} />
             </form>
         </header>
     );

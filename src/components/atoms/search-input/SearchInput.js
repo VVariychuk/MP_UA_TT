@@ -9,7 +9,6 @@ const SearchInput = ({
     placeholder = '',
     queriesList,
 }) => {
-    console.log(queriesList);
     return (
         <>
             <input

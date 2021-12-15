@@ -23,7 +23,7 @@ export default class ApiService {
         );
     }
 
-    getResource(uri, page, per_page, query) {
+    getResource(uri, page, per_page, query, orientation) {
         const client_id = this._clientID;
         const queryParam = query ? { query } : {};
         return this._axios.get(
@@ -32,6 +32,7 @@ export default class ApiService {
                     client_id,
                     page,
                     per_page,
+                    orientation,
                     ...queryParam,
                 }),
             { crossdomain: true },

@@ -8,12 +8,12 @@ class ApiRequests extends ApiService {
         this._collections = '';
     }
 
-    getPhotosBySearchQuery(page = this._page, per_page = this._per_page, query = '') {
-        return this.getResource(this._searchByQuery, page, per_page, query);
+    getPhotosBySearchQuery(page = this._page, per_page = this._per_page, query = '', orientation = 'landscape') {
+        return this.getResource(this._searchByQuery, page, per_page, query, orientation);
     }
 
-    getRandom(page = this._page, per_page = this._per_page) {
-        return this.getResource(this._random, page, per_page);
+    getRandom(page = this._page, per_page = this._per_page, orientation = 'landscape') {
+        return this.getResource(this._random, page, per_page, orientation);
     }
 }
 
