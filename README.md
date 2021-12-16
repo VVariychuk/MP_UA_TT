@@ -22,3 +22,5 @@ Start development mode: `npm start`
 -   Server requests must be in the `service` folder
 
 -   Styling is done using CSS modules.
+
+-   Base url ends with com/
