@@ -2,6 +2,7 @@
   "name": "mp-tt",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://vvariychuk.github.io/MP_UA_TT/",
   "dependencies": {
     "@react-hook/window-size": "^3.0.7",
     "@testing-library/jest-dom": "^5.16.1",
